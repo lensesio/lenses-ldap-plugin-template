@@ -1,6 +1,6 @@
 # Lenses LDAP plugin template
 
-When using Lenses with LDAP enabled and you want to customise the way user roles are returned, this library is the reference point.
+Using [Lenses](http://www.landoop.com/kafka-lenses/) with LDAP security mode and you need to customise the way user roles are retrieved, this library is the reference point.
  
 The current implementation is matching Active Directory setup.
 
