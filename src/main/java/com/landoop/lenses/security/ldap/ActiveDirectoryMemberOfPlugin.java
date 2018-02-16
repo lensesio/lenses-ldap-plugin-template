@@ -31,19 +31,15 @@ public class ActiveDirectoryMemberOfPlugin implements LdapUserGroupsPlugin {
    *
    * @param ctx                     the <code>DirContext</code> instance to perform an operation on.
    * @param ldapEntryIdentification the identification of the LDAP entry used to authenticate the supplied <code>DirContext</code>.
-   * @param adminRoles              A list of LDAP roles/groups for which admin rights are given in Lenses.
-   * @param writeRoles              A list of LDAP roles/groups for which 'write' rights are given in Lenses.
-   * @param readRoles               A list of LDAP roles/groups for which 'read' rights are given in Lenses.
-   * @param noDataRoles             A list of LDAP roles/groups for which 'nodata' rights are given in Lenses.
    * @return A set of Ldap groups/roles the person belongs to
    */
   @Override
-  public UserInfo getUserInfo(DirContext ctx, LdapEntryIdentification ldapEntryIdentification, Set<String> adminRoles, Set<String> writeRoles, Set<String> readRoles, Set<String> noDataRoles) {
+  public UserInfo getUserInfo(DirContext ctx, LdapEntryIdentification ldapEntryIdentification) {
     final String[] attributesToReturn = new String[]{memberOfKey, userName};
     try {
       Attributes allAttributes = ctx.getAttributes(ldapEntryIdentification.getRelativeName(), attributesToReturn);
 
-      final Set<LensesRoles> roles = new HashSet<>();
+      final Set<String> roles = new HashSet<>();
       final Pattern groupExtract = Pattern.compile(groupExtractRegex);
       final NamingEnumeration<?> namings = allAttributes.get(memberOfKey).getAll();
       while (namings.hasMore()) {
@@ -51,21 +47,7 @@ public class ActiveDirectoryMemberOfPlugin implements LdapUserGroupsPlugin {
         final Matcher matcher = groupExtract.matcher(entry);
         if (matcher.find()) {
           final String group = matcher.group(1).toLowerCase();
-          if (adminRoles.contains(group)) {
-            roles.add(LensesRoles.ADMIN);
-            roles.add(LensesRoles.WRITE);
-            roles.add(LensesRoles.READ);
-            roles.add(LensesRoles.NODATA);
-          } else if (writeRoles.contains(group)) {
-            roles.add(LensesRoles.WRITE);
-            roles.add(LensesRoles.READ);
-            roles.add(LensesRoles.NODATA);
-          } else if (readRoles.contains(group)) {
-            roles.add(LensesRoles.READ);
-            roles.add(LensesRoles.NODATA);
-          } else if (noDataRoles.contains(group)) {
-            roles.add(LensesRoles.NODATA);
-          }
+          roles.add(group);
         }
       }
 

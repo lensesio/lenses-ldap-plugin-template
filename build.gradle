@@ -23,7 +23,7 @@ allprojects {
     targetCompatibility = 1.8
 
     ext {
-        pluginVersion = "1.0"
+        pluginVersion = "2.0"
     }
 
     repositories {
